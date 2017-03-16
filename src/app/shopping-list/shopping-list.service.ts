@@ -17,4 +17,12 @@ export class ShoppingListService {
   addItem(ingredient: Ingredient) {
     this.items.push(ingredient);
   }
+
+  saveItem(oldItem: Ingredient, newItem: Ingredient) {
+    this.items[this.items.indexOf(oldItem)] = newItem;
+  }
+
+  deleteItem(item: Ingredient) {
+    this.items.splice(this.items.indexOf(item), 1);
+  }
 }
