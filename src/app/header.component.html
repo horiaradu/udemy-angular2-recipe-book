@@ -8,11 +8,17 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li routerLinkActive="active"><a [routerLink]="['/recipes']">Recipes</a></li>
-        <li routerLinkActive="active"><a [routerLink]="['/shopping-list']">Shopping List</a></li>
+        <li routerLinkActive="active"><a style="cursor: pointer" [routerLink]="['/recipes']">Recipes</a></li>
+        <li routerLinkActive="active"><a style="cursor: pointer" [routerLink]="['/shopping-list']">Shopping List</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown" rbDropdown>
+        <ng-template [ngIf]="!isAuthenticated">
+          <li><a [routerLink]="['/signup']">Register</a></li>
+          <li><a [routerLink]="['/signin']">Log In</a></li>
+        </ng-template>
+        
+        <li *ngIf="isAuthenticated"><a style="cursor: pointer" (click)="signout()">Log Out</a></li>
+        <li class="dropdown" *ngIf="isAuthenticated" rbDropdown>
           <a class="dropdown-toggle"
              role="button"
              aria-haspopup="true"

@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
@@ -13,6 +12,9 @@ import { ShoppingListModule } from "./shopping-list/shopping-list.module";
 import { HomeComponent } from './home.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from './auth/auth.service';
+import { AuthGuard } from './auth/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -27,9 +29,10 @@ import { SigninComponent } from './auth/signin/signin.component';
     BrowserModule,
     HttpModule,
     routing,
-    ShoppingListModule
+    ShoppingListModule,
+    FormsModule
   ],
-  providers: [RecipeService, ShoppingListService],
+  providers: [RecipeService, ShoppingListService, AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {

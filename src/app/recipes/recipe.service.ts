@@ -2,6 +2,9 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { Recipe } from "./recipe";
 import { Ingredient } from "../shared/ingredient";
 import { Headers, Http, Response } from "@angular/http";
+import { map } from 'rxjs/operators/map'
+import { switchMap } from 'rxjs/operators/switchMap'
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class RecipeService {
@@ -14,7 +17,7 @@ export class RecipeService {
     new Recipe('Summer Salad', 'Okayish', 'https://www.bbcgoodfood.com/sites/default/files/recipe-collections/collection-image/2013/05/beetroot-feta-grain-salad.jpg', [])
   ];
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private authService: AuthService) {
   }
 
   getRecipes() {
@@ -42,12 +45,18 @@ export class RecipeService {
     const headers = new Headers({
       'Content-Type': 'application/json'
     });
-    return this.http.put('https://recipe-book-dcca4.firebaseio.com/recipes.json', body, { headers });
+    return this.authService.getToken()
+    .pipe(
+      switchMap(token => this.http.put('https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token, body, { headers })),
+    );
   }
 
   fetchData() {
-    return this.http.get('https://recipe-book-dcca4.firebaseio.com/recipes.json')
-      .map((response: Response) => response.json())
+    return this.authService.getToken()
+      .pipe(
+        switchMap(token => this.http.get('https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token)),
+        map((response: Response) => response.json())
+      )
       .subscribe((data: Recipe[]) => {
         this.recipes = data;
         this.recipesChanged.emit(this.recipes);
