@@ -43,23 +43,11 @@ export class RecipeService {
   storeData() {
     const body = JSON.stringify(this.recipes);
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.authService.getToken()
-    .pipe(
-      switchMap(token => 
-        this.http.put(
-          'https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token,
-          body,
-          { headers, params: new HttpParams().set('auth', token) }
-        )
-      ),
-    );
+    return this.http.put('https://recipe-book-dcca4.firebaseio.com/recipes.json', body, { headers });
   }
 
   fetchData() {
-    return this.authService.getToken()
-      .pipe(
-        switchMap(token => this.http.get<Recipe[]>('https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token)),
-      )
+    return this.http.get<Recipe[]>('https://recipe-book-dcca4.firebaseio.com/recipes.json')
       .subscribe(data => {
         this.recipes = data;
         this.recipesChanged.emit(this.recipes);

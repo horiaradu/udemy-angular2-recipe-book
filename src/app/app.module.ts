@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header.component';
@@ -15,6 +15,7 @@ import { SigninComponent } from './auth/signin/signin.component';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from './auth/auth.service';
 import { AuthGuard } from './auth/auth-guard.service';
+import { AuthInterceptor } from './shared/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,13 @@ import { AuthGuard } from './auth/auth-guard.service';
     ShoppingListModule,
     FormsModule
   ],
-  providers: [RecipeService, ShoppingListService, AuthService, AuthGuard],
+  providers: [
+    RecipeService,
+    ShoppingListService,
+    AuthService,
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
