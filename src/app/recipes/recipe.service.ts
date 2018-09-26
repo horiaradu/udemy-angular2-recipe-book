@@ -1,10 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Recipe } from "./recipe";
 import { Ingredient } from "../shared/ingredient";
-import { Headers, Http, Response } from "@angular/http";
 import { map } from 'rxjs/operators/map'
 import { switchMap } from 'rxjs/operators/switchMap'
 import { AuthService } from '../auth/auth.service';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class RecipeService {
@@ -17,7 +17,7 @@ export class RecipeService {
     new Recipe('Summer Salad', 'Okayish', 'https://www.bbcgoodfood.com/sites/default/files/recipe-collections/collection-image/2013/05/beetroot-feta-grain-salad.jpg', [])
   ];
 
-  constructor(private http: Http, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService) {
   }
 
   getRecipes() {
@@ -42,22 +42,25 @@ export class RecipeService {
 
   storeData() {
     const body = JSON.stringify(this.recipes);
-    const headers = new Headers({
-      'Content-Type': 'application/json'
-    });
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.authService.getToken()
     .pipe(
-      switchMap(token => this.http.put('https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token, body, { headers })),
+      switchMap(token => 
+        this.http.put(
+          'https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token,
+          body,
+          { headers, params: new HttpParams().set('auth', token) }
+        )
+      ),
     );
   }
 
   fetchData() {
     return this.authService.getToken()
       .pipe(
-        switchMap(token => this.http.get('https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token)),
-        map((response: Response) => response.json())
+        switchMap(token => this.http.get<Recipe[]>('https://recipe-book-dcca4.firebaseio.com/recipes.json?auth=' + token)),
       )
-      .subscribe((data: Recipe[]) => {
+      .subscribe(data => {
         this.recipes = data;
         this.recipesChanged.emit(this.recipes);
       });
