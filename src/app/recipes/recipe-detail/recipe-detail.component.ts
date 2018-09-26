@@ -13,7 +13,7 @@ import { RecipeService } from "../recipe.service";
 export class RecipeDetailComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   private recipeId: number;
-  private selectedRecipe: Recipe = null;
+  selectedRecipe: Recipe = null;
 
   constructor(private shoppingListService: ShoppingListService, private route: ActivatedRoute,
               private recipeService: RecipeService, private router: Router) {

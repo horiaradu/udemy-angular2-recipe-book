@@ -15,7 +15,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   private recipeId: number;
   private recipe: Recipe;
   private isNew = true;
-  private recipeForm: FormGroup;
+  recipeForm: FormGroup;
 
   constructor(private route: ActivatedRoute, private recipeService: RecipeService, private formBuilder: FormBuilder,
               private router: Router) {
@@ -94,6 +94,10 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         amount: new FormControl(amount, [Validators.required, Validators.pattern("\\d+")])
       })
     )
+  }
+
+  get ingredientsFormArray() {
+    return (<FormArray>this.recipeForm.get('ingredients')).controls
   }
 
   private navigateBack() {

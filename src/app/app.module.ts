@@ -27,7 +27,7 @@ import { AuthInterceptor } from './shared/auth.interceptor';
     SigninComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'my-app' }),
     HttpClientModule,
     routing,
     ShoppingListModule,
